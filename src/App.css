@@ -43,3 +43,11 @@
 .tituloProps{
   color: red;
 }
+.tarjeta{
+  min-width: 200px;
+  min-height: 200px;
+  background-color: teal;
+  color: white;
+  padding: 10px;
+  margin: 5px;
+}

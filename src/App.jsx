@@ -3,47 +3,74 @@ import Navbar from './Navbar'
 import Formulario from './Formulario';
 import { Route, Routes, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-
+import UserTable from './Table';
+import FormCrud from './Formu';
+import EditForm from './EditForm';
 
 
 function App() {
-  const [clicks, setClicks] = useState(0)
-  const [test, setTest] = useState('hola')
+
+  const userData = [
+    { id: 1, name: 'Juan', email: 'juan@gmail.com' },
+    { id: 2, name: 'sofia', email: 'sofia@gmail.com' },
+    { id: 3, name: 'ignacio', email: 'ignacio@gmail.com' }
+  ]
+
+  
+    const initialFormState = {
+      id: null,
+      name: '',
+      email: ''
+  }
+  const [users, setUsers] = useState(userData);
+  const [editing, setEditing] = useState(false)
+  const [currentUser, setCurrentUser] = useState(initialFormState)
 
 
-  // useEffect(() => {
-  //   console.log('me acabo de ejecutar')
-  // })
-  //!EJECUTA EL CODIGO QUE TIENE ADENTRO, EN EL MONTAJE Y EN CADA ACTUALIZACION DE ESTADO
-  // useEffect(() => {
-  //   console.log('me acabo de ejecutar')
-  // },[test], [clicks])
-  //!EJECUTA EL CODIGO QUE TIENE DENTRO, EN EL MONTAJE Y EN CADA ACTIALIZACION EN PARTICULAR, (SEGUN SE LO INDIQUEMOS CON EL ESTADO)
+  const addUser = (user) => {
+    user.id = users.length + 1
+    setUsers([...users, user])
+  }
+
+  const deleteUser = (id) => {
+    setUsers(users.filter((user) => user.id !== id))
+  }
+
+  const editRow = (user) =>{
+    setEditing(true);
+    setCurrentUser({ id: user.id, name: user.name, email: user.email })
+
+  }
 
 
-  useEffect(() => {
-    console.log('me acabo de montar');
-    return() => {
-      console.log('me acabo de desmontar')
-    }
-  }, [clicks])
+  const updateUser = (id, updateUser) => {
+setCurrentUser(false);
+setUsers(users.map((user) => (user.id === id ? updateUser : user)))
+
+  }
+
   return (
     <>
+      <div className='row'>
 
-      <div>
-      <h1>hola desde el app</h1>
-      <button onClick={() => setClicks(clicks + 1)}>{clicks}</button>
-      <button onClick={() => setTest('chau')}>{test}</button>
+        {editing? (
+          <div className='col-xl-10 col-lg-10 col-md-10 col-sm-12'>
+          <h2> Editando</h2>
+          <EditForm setEditing={setEditing} updateUser={updateUser} currentUser={currentUser}/>
+        </div>
+        ) : (
+
+          <div className='col-xl-10 col-lg-10 col-md-10 col-sm-12'>
+             <>creando</>
+          <FormCrud addUser={addUser} />
+    </div>
+         
+        )}
+      
+        <div className='col-xl-10 col-lg-10 col-md-10 col-sm-12'>
+          <UserTable users={users} deleteUser={deleteUser} editRow={editRow} />
+        </div>
       </div>
-
-
-   {/* <Routes> */}
-        {/* <Route path='/contacto' Component={Navbar} />
-        <Route path='/formulario' Component={Formulario} />
-        <Route path='/componente' component={Titulo}/> */}
-        {/* </Routes> */}
-        {/* <Link to="/formulario">Formulario de contacto</Link>
-        <Link to="/contacto">Contacto</Link> */}
     </>
   )
 }
